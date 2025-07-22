@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          
+          script-src  'self' 'unsafe-inline';
+          style-src   'self' 'unsafe-inline';
+          font-src    'self' https://at.alicdn.com;
+          
+          connect-src 'self'
+                      https://psanchezmolina.github.io
+                      https://app.pabs.ai
+                      https://newbrain.pabs.ai;
+          
+          img-src     'self' data:;
+        ">
+  <title>ConexiónWA‑Pabs.ai</title>
+
+  <!-- Config JSON inyectado por GitHub Actions -->
+  <script>
+    window._CONFIG = {};
+    fetch('/config.json')
+      .then(res => res.json())
+      .then(cfg => { window._CONFIG = cfg; })
+      .catch(() => {
+        console.error('No se pudo cargar config.json – ¿has configurado tu GitHub Secret y Actions?');
+      });
+  </script>
+</head>
+
+<body>
+  <h1>ConexiónWA‑Pabs</h1>
+
+  <div id="auth">
+    <label>
+      Location ID: 
+      <input id="loc-id" />
+    </label>
+    <button id="btn-connect">Conectar</button>
+  </div>
+
+  <div id="evo-panel" style="display:none;">
+    <button id="btn-generate">Generar QR</button>
+    <button id="btn-restart">Reiniciar Instancia</button>
+    <button id="btn-status">Comprobar Estado</button>
+    <div id="evo-output"></div>
+  </div>
+
+  <!-- Tu lógica principal -->
+  <script src="panel.js" defer></script>
+</body>
+</html>
