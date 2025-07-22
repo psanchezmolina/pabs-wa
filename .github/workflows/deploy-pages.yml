@@ -7,6 +7,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       # 1) Traer el código
       - name: Checkout repository
@@ -14,20 +15,19 @@ jobs:
         with:
           fetch-depth: 1
 
-      # 2) Inyectar el secret en config.json
+      # 2) Inyectar el secret en config.json en la raíz
       - name: Generate config.json
         run: |
-          mkdir -p public
-          cat <<EOF > public/config.json
+          cat <<EOF > config.json
           {
             "webhookUrl": "${{ secrets.N8N_WEBHOOK_URL }}",
             "authHeader": "Basic ${{ secrets.N8N_WEBHOOK_AUTH }}"
           }
           EOF
 
-      # 3) Desplegar con peaceiris/actions-gh-pages
+      # 3) Desplegar la raíz del repo a GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          publish_dir: ./
