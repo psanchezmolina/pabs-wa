@@ -2,35 +2,17 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self';
-          
-          script-src  'self' 'unsafe-inline';
-          style-src   'self' 'unsafe-inline';
-          font-src    'self' https://at.alicdn.com;
-          
-          connect-src 'self'
-                      https://psanchezmolina.github.io
-                      https://app.pabs.ai
-                      https://newbrain.pabs.ai
-                      https://pabs-pabs-wa.r4isqy.easypanel.host/;
-          
-          img-src     'self' data:;
-        ">
+ <meta http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data:;
+        connect-src 'self' https://newbrain.pabs.ai;
+        font-src 'self' https://at.alicdn.com;
+      ">
   <title>ConexiónWA‑Pabs.ai</title>
-  <link rel="stylesheet" href="/style.css" />
-
-  <!-- Config JSON inyectado por GitHub Actions -->
-  <script>
-    window._CONFIG = {};
-    fetch('config.json')
-      .then(res => res.json())
-      .then(cfg => { window._CONFIG = cfg; })
-      .catch(() => {
-        console.error('No se pudo cargar config.json – ¿has configurado tu GitHub Secret y Actions?');
-      });
-  </script>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
