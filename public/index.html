@@ -2,42 +2,49 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
- <meta http-equiv="Content-Security-Policy"
-      content="
-        default-src 'self';
-        script-src 'self';
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data: blob:;
-        connect-src 'self' https://newbrain.pabs.ai;
-        font-src 'self' https://at.alicdn.com;
-      ">
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          script-src 'self';
+          style-src 'self' 'unsafe-inline';
+          img-src 'self' data: blob:;
+          connect-src 'self' https://newbrain.pabs.ai;
+          font-src 'self' https://at.alicdn.com;
+        ">
   <title>ConexiónWA‑Pabs.ai</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="evo-panel">   <!-- Aplicamos la clase evo-panel aquí -->
-    <h1>ConexiónWA‑Pabs</h1>
+  <div class="evo-panel">
+    <!-- Título principal -->
+    <h1>Bienvenido al asistente para conectar el WhatsApp</h1>
 
-    <div id="auth">
-      <label>
-        Location ID: 
-        <input id="loc-id" />
-      </label>
-      <button id="btn-connect">Conectar</button>
-    </div>
+    <!-- Instrucciones paso a paso -->
+    <ol class="steps">
+      <li>
+        <strong>Paso 1.</strong>
+        Ve a Ajustes → Empresa y copia el <em>Location ID</em>.
+      </li>
+      <li>
+        <strong>Paso 2.</strong>
+        Pega tu <em>Location ID</em> en esta caja:
+        <input id="loc-id" placeholder="e.g. jWmwy7nMqnsXQPdZdSW8" />
+      </li>
+      <li>
+        <strong>Paso 3.</strong>
+        Haz clic en <kbd>Revisar conexión</kbd>. Si no estás conectado verás un código QR, 
+        o se confirmará que ya estás conectado.
+      </li>
+    </ol>
 
-    <div id="evo-panel">    <!-- Quitamos el style inline -->
-      <div class="buttons">  <!-- Añadimos clase buttons -->
-        <button id="btn-generate">Generar QR</button>
-        <button id="btn-restart">Reiniciar Instancia</button>
-        <button id="btn-status">Comprobar Estado</button>
-      </div>
-      <div id="evo-output"></div>
-    </div>
+    <!-- Botón único -->
+    <button id="btn-generate">Revisar conexión</button>
+
+    <!-- Área de resultado (QR o mensaje) -->
+    <div id="evo-output"></div>
   </div>
 
-  <!-- Tu lógica principal -->
   <script src="panel.js" defer></script>
 </body>
 </html>

@@ -1,33 +1,82 @@
-/* Contenedor principal centrado vertical y horizontalmente */
+/* Layout general del panel */
 .evo-panel {
-  display: flex;                    /* Flexbox para centrar :contentReference[oaicite:0]{index=0} */
-  flex-direction: column;           /* Apilar elementos verticalmente */
-  align-items: center;              /* Centrar en el eje transversal :contentReference[oaicite:1]{index=1} */
-  justify-content: center;          /* Centrar en el eje principal :contentReference[oaicite:2]{index=2} */
-  height: 100vh;                    /* Ocupa toda la altura de la ventana */
-  margin: 0;                        /* Sin márgenes extra */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 480px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background-color: #fff;
+  font-family: sans-serif;
 }
 
-/* Fila de botones con espacio uniforme */
-.evo-panel .buttons {
-  display: flex;                    /* Flexbox para los botones */
-  gap: 1rem;                        /* Separación entre botones :contentReference[oaicite:3]{index=3} */
+/* Título centrado */
+.evo-panel h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: #333;
 }
 
-/* Estilo plano para los botones */
-.evo-panel button {
-  background-color: #0066FF;        /* Azul vibrante */
-  color: #FFFFFF;                   /* Texto blanco */
-  border: none;                     /* Sin borde */
-  border-radius: 0.25rem;           /* Esquinas redondeadas :contentReference[oaicite:4]{index=4} */
-  padding: 0.5rem 1rem;             /* Relleno cómodo */
-  font-size: 1rem;                  /* Tamaño de texto legible */
-  font-weight: 500;                 /* Ligero pero destacado */
-  cursor: pointer;                  /* Puntero al pasar el ratón */
+/* Lista de pasos */
+.steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem;
+  width: 100%;
+}
+.steps li {
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+.steps li strong {
+  color: #0066FF;
+}
+.steps li input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Botón “Revisar conexión” */
+#btn-generate {
+  background-color: #0066FF;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-bottom: 1.5rem;
+}
+#btn-generate:hover {
+  background-color: #0053CC;
 }
 
-/* Estado hover para retroalimentación */
-.evo-panel button:hover {
-  background-color: #005AE6;        /* Azul más oscuro al pasar el ratón */
+/* Salida del QR o mensaje */
+#evo-output {
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f9f9f9;
+  border: 1px dashed #ddd;
+  border-radius: 4px;
+  padding: 1rem;
+}
+#evo-output img {
+  max-width: 100%;
+  height: auto;
+}
+#evo-output p {
+  color: #333;
+  font-size: 1rem;
 }
