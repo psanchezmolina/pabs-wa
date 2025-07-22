@@ -16,8 +16,8 @@
 .evo-panel h1 {
   text-align: center;
   margin-bottom: 1.5rem;
-  font-size: 1.75rem;
-  color: #333;
+  font-size: 1.95rem;
+  color: #313131;
 }
 
 /* Lista de pasos */
@@ -29,8 +29,8 @@
 }
 .steps li {
   margin-bottom: 1rem;
-  font-size: 0.95rem;
-  color: #555;
+  font-size: 1.05rem;
+  color: #313131;
 }
 .steps li strong {
   color: #0066FF;
