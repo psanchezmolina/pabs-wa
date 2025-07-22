@@ -1,0 +1,4 @@
+{
+  "webhookUrl": "https://newbrain.pabs.ai/webhook",
+  "authHeader": "Basic btoa('pabs-wa:f9@Kq7#TwL4vXp2M')"
+}
