@@ -18,6 +18,7 @@
           img-src     'self' data:;
         ">
   <title>ConexiónWA‑Pabs.ai</title>
+  <link rel="stylesheet" href="/style.css" />
 
   <!-- Config JSON inyectado por GitHub Actions -->
   <script>
@@ -32,21 +33,25 @@
 </head>
 
 <body>
-  <h1>ConexiónWA‑Pabs</h1>
+  <div class="evo-panel">   <!-- Aplicamos la clase evo-panel aquí -->
+    <h1>ConexiónWA‑Pabs</h1>
 
-  <div id="auth">
-    <label>
-      Location ID: 
-      <input id="loc-id" />
-    </label>
-    <button id="btn-connect">Conectar</button>
-  </div>
+    <div id="auth">
+      <label>
+        Location ID: 
+        <input id="loc-id" />
+      </label>
+      <button id="btn-connect">Conectar</button>
+    </div>
 
-  <div id="evo-panel" style="display:none;">
-    <button id="btn-generate">Generar QR</button>
-    <button id="btn-restart">Reiniciar Instancia</button>
-    <button id="btn-status">Comprobar Estado</button>
-    <div id="evo-output"></div>
+    <div id="evo-panel">    <!-- Quitamos el style inline -->
+      <div class="buttons">  <!-- Añadimos clase buttons -->
+        <button id="btn-generate">Generar QR</button>
+        <button id="btn-restart">Reiniciar Instancia</button>
+        <button id="btn-status">Comprobar Estado</button>
+      </div>
+      <div id="evo-output"></div>
+    </div>
   </div>
 
   <!-- Tu lógica principal -->

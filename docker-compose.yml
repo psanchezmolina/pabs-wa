@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  evo-panel:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - N8N_BASE=https://newbrain.pabs.ai
+      - N8N_AUTH_HEADER=Basic btoa('pabs-wa:f9@Kq7#TwL4vXp2M')
+    restart: unless-stopped
