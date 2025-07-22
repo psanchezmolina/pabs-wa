@@ -22,7 +22,7 @@
   <!-- Config JSON inyectado por GitHub Actions -->
   <script>
     window._CONFIG = {};
-    fetch('/config.json')
+    fetch('config.json')
       .then(res => res.json())
       .then(cfg => { window._CONFIG = cfg; })
       .catch(() => {

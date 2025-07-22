@@ -2,7 +2,7 @@
   // 1) Carga configuración inyectada en build (config.json)
   let config;
   try {
-    const res = await fetch('/config.json');
+    const res = await fetch('config.json');
     if (!res.ok) throw new Error(`No se pudo cargar config.json (${res.status})`);
     config = await res.json();
   } catch (err) {
