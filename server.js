@@ -1,14 +1,19 @@
 import express from 'express';
 import fetch from 'node-fetch';
 import path from 'path';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const N8N_BASE = process.env.N8N_BASE_URL;           // e.g. https://tumae.miau.ai
 const AUTH_HEADER = process.env.N8N_AUTH_HEADER;     // e.g. "Basic abcdef..."
+const __filename = fileURLToPath(import.meta.url);
+const __dirname  = path.dirname(__filename);
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Proxy genérico
 app.all('/api/:action', async (req, res) => {
