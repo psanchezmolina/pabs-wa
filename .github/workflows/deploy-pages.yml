@@ -1,0 +1,33 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1) Traer el código
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      # 2) Inyectar el secret en config.json
+      - name: Generate config.json
+        run: |
+          mkdir -p public
+          cat <<EOF > public/config.json
+          {
+            "webhookUrl": "${{ secrets.N8N_WEBHOOK_URL }}",
+            "authHeader": "Basic ${{ secrets.N8N_WEBHOOK_AUTH }}"
+          }
+          EOF
+
+      # 3) Desplegar con peaceiris/actions-gh-pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public

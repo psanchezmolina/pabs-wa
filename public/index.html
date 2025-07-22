@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 
+    Content Security Policy: 
+    - 'self' para cargar tu propio JS/CSS
+    - connect-src para permitir peticiones al dominio inyectado
+    - img-src data: para manejar imágenes embedidas (QR)
+    -->
+  <meta http-equiv="Content-Security-Policy" 
+        content="default-src 'self'; connect-src 'self' https://*.easypanel.host; img-src 'self' data:;">
+  <title>ConexiónWA‑Pabs</title>
+  <!-- Carga el config generado por GitHub Actions -->
+  <script>
+    window._CONFIG = {};
+    fetch('/config.json')
+      .then(res => res.json())
+      .then(cfg => { window._CONFIG = cfg; })
+      .catch(() => {
+        console.error('No se pudo cargar config.json – ¿has configurado tu GitHub Secret y Actions?');
+      });
+  </script>
+</head>
+<body>
+  <h1>ConexiónWA‑Pabs</h1>
+
+  <div id="auth">
+    <label>
+      Location ID: 
+      <input id="loc-id" />
+    </label>
+    <button id="btn-connect">Conectar</button>
+  </div>
+
+  <div id="evo-panel" style="display:none;">
+    <button id="btn-generate">Generar QR</button>
+    <button id="btn-restart">Reiniciar Instancia</button>
+    <button id="btn-status">Comprobar Estado</button>
+    <div id="evo-output"></div>
+  </div>
+
+  <!-- Tu lógica principal -->
+  <script src="panel.js" defer></script>
+</body>
+</html>
