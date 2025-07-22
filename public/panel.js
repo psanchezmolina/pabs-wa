@@ -1,5 +1,6 @@
+// public/panel.js
 (() => {
-  // 1) Ajusta la ruta base a tu proxy local (/api)
+  // 1) Ruta base a tu proxy local
   const BASE = '/api';
 
   // 2) Referencias al DOM
@@ -9,26 +10,31 @@
   const output     = document.getElementById('evo-output');
   let locationId;
 
-  // 3) Función genérica para llamadas al backend
+  // 3) Lógica genérica para llamadas al backend
   async function call(path, method = 'GET') {
     if (!locationId) throw new Error('Location ID no definido');
-    const url = method === 'GET'
-      ? `${BASE}/${path}?locationId=${encodeURIComponent(locationId)}`
-      : `${BASE}/${path}`;
+    let url  = `${BASE}/${path}`;
     const opts = { method };
 
-    if (method !== 'GET') {
+    if (method === 'GET') {
+      url += `?locationId=${encodeURIComponent(locationId)}`;
+    } else {
       opts.headers = { 'Content-Type': 'application/json' };
-      opts.body = JSON.stringify({ locationId });
+      opts.body    = JSON.stringify({ locationId });
     }
 
     const res = await fetch(url, opts);
     if (!res.ok) throw new Error(`Error ${res.status}`);
-    // Si es imagen (QR), podrías manejar blob, pero aquí devolvemos JSON
-    return res.json();
+
+    const ct = res.headers.get('content-type') || '';
+    if (ct.includes('application/json')) {
+      return res.json();
+    } else {
+      return res.blob();
+    }
   }
 
-  // 4) Handler para Conectar (Location ID)
+  // 4) Handler para “Conectar”
   btnConnect.addEventListener('click', () => {
     locationId = locInput.value.trim();
     if (!locationId) {
@@ -37,19 +43,29 @@
     }
     localStorage.setItem('locationId', locationId);
     document.getElementById('auth').style.display = 'none';
-    panel.style.display = 'block';
+    panel.style.display = 'flex';
   });
 
   // 5) Generar QR
   document.getElementById('btn-generate').addEventListener('click', async () => {
     output.textContent = 'Generando QR…';
     try {
-      const { base64 } = await call('wa-qr');
-      const img = new Image();
-      img.src = `data:image/png;base64,${base64.split(',')[1]}`;
-      img.alt = 'QR WhatsApp';
+      const result = await call('wa-qr');
       output.innerHTML = '';
-      output.appendChild(img);
+
+      if (result instanceof Blob) {
+        // Renderiza la imagen si es Blob
+        const imgURL = URL.createObjectURL(result);
+        const img    = document.createElement('img');
+        img.src      = imgURL;
+        img.alt      = 'QR WhatsApp';
+        output.appendChild(img);
+        // Revocar la URL tras 1 min
+        setTimeout(() => URL.revokeObjectURL(imgURL), 60_000);
+      } else {
+        // Muestra el mensaje JSON
+        output.textContent = result.message || JSON.stringify(result);
+      }
     } catch (e) {
       output.textContent = e.message;
     }
@@ -59,6 +75,7 @@
   document.getElementById('btn-restart').addEventListener('click', async () => {
     output.textContent = 'Reiniciando…';
     try {
+      // Asegúrate de que tu webhook n8n esté configurado como PUT
       const json = await call('restart-instance', 'PUT');
       output.textContent =
         `Instancia ${json.instance.instanceName} → ${json.instance.state}`;
@@ -79,7 +96,7 @@
     }
   });
 
-  // 8) Auto‑conexión si ya había un Location ID guardado
+  // 8) Auto‑conexión si ya había un Location ID
   const saved = localStorage.getItem('locationId');
   if (saved) {
     locInput.value = saved;
