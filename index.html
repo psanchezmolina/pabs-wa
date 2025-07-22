@@ -2,16 +2,24 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <!-- 
-    Content Security Policy: 
-    - 'self' para cargar tu propio JS/CSS
-    - connect-src para permitir peticiones al dominio inyectado
-    - img-src data: para manejar imágenes embedidas (QR)
-    -->
-  <meta http-equiv="Content-Security-Policy" 
-        content="default-src 'self'; connect-src 'self' https://*.easypanel.host; img-src 'self' data:;">
+  <meta http-equiv="Content-Security-Policy"
+        content="
+          default-src 'self';
+          
+          script-src  'self' 'unsafe-inline';
+          style-src   'self' 'unsafe-inline';
+          font-src    'self' https://at.alicdn.com;
+          
+          connect-src 'self'
+                      https://psanchezmolina.github.io
+                      https://app.pabs.ai
+                      https://newbrain.pabs.ai;
+          
+          img-src     'self' data:;
+        ">
   <title>ConexiónWA‑Pabs</title>
-  <!-- Carga el config generado por GitHub Actions -->
+
+  <!-- Config JSON inyectado por GitHub Actions -->
   <script>
     window._CONFIG = {};
     fetch('/config.json')
@@ -22,6 +30,7 @@
       });
   </script>
 </head>
+
 <body>
   <h1>ConexiónWA‑Pabs</h1>
 
