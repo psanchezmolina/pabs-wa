@@ -2,11 +2,10 @@ import express from 'express';
 import fetch from 'node-fetch';
 import path from 'path';
 import { fileURLToPath } from 'url';
+const { N8N_BASE_URL, N8N_AUTH_HEADER } = require('./config');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const N8N_BASE = process.env.N8N_BASE_URL;           // e.g. https://tumae.miau.ai
-const AUTH_HEADER = process.env.N8N_AUTH_HEADER;     // e.g. "Basic abcdef..."
 const __filename = fileURLToPath(import.meta.url);
 const __dirname  = path.dirname(__filename);
 
@@ -24,8 +23,8 @@ app.all('/api/:action', async (req, res) => {
     return res.status(400).json({ error: 'locationId missing' });
   }
 
-  let url = `${N8N_BASE}/webhook/${action}`;
-  let opts = { method: req.method, headers: { Authorization: AUTH_HEADER } };
+  let url = `${N8N_BASE_URL}/webhook/${action}`;
+  let opts = { method: req.method, headers: { Authorization: N8N_AUTH_HEADER } };
 
   // GET: pasamos locationId como query; POST/PUT: en body
   if (req.method === 'GET') {
