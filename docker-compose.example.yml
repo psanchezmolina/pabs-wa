@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # Main application
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - GHL_CLIENT_ID=${GHL_CLIENT_ID}
+      - GHL_CLIENT_SECRET=${GHL_CLIENT_SECRET}
+      - GHL_REDIRECT_URI=${GHL_REDIRECT_URI}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EVOLUTION_BASE_URL=${EVOLUTION_BASE_URL}
+      - ADMIN_PHONE=${ADMIN_PHONE}
+      - ADMIN_API_KEY=${ADMIN_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - pabs-network
+
+  # Queue worker (separate process)
+  worker:
+    build: .
+    command: npm run worker
+    environment:
+      - NODE_ENV=production
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_KEY=${SUPABASE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EVOLUTION_BASE_URL=${EVOLUTION_BASE_URL}
+      - ADMIN_PHONE=${ADMIN_PHONE}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - pabs-network
+
+  # Redis for BullMQ queues
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - pabs-network
+
+volumes:
+  redis-data:
+    driver: local
+
+networks:
+  pabs-network:
+    driver: bridge

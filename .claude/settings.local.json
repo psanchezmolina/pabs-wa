@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(test:*)",
+      "Bash(npm install)",
+      "Bash(cp:*)",
+      "Bash(node test-logger.js:*)",
+      "Bash(node test-database.js:*)",
+      "Bash(node test-redis.js:*)",
+      "Bash(timeout 3 bash:*)",
+      "Bash(node test-error-handler.js:*)",
+      "Bash(node test-request-logger.js:*)",
+      "Bash(node test-validate.js:*)",
+      "Bash(node test-http-client.js:*)",
+      "Bash(node test-phone-formatter.js:*)",
+      "Bash(node test-errors.js:*)",
+      "Bash(node test-app.js:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

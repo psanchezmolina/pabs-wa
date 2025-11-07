@@ -1,12 +1,51 @@
 {
-  "name": "evo-panel",
+  "name": "pabs-wa-bridge",
   "version": "1.0.0",
+  "description": "WhatsApp Bridge middleware between GoHighLevel CRM and Evolution API",
   "type": "module",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "worker": "node src/queues/worker.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
+  "keywords": [
+    "whatsapp",
+    "gohighlevel",
+    "crm",
+    "evolution-api",
+    "middleware",
+    "webhook"
+  ],
+  "author": "Pablo Sánchez (@pabs.ai)",
+  "license": "MIT",
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "axios": "^1.6.2",
+    "axios-retry": "^4.0.0",
+    "bullmq": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "node-fetch": "^3.3.1"
+    "helmet": "^7.1.0",
+    "ioredis": "^5.3.2",
+    "joi": "^17.11.0",
+    "morgan": "^1.10.0",
+    "openai": "^4.20.1",
+    "winston": "^3.11.0",
+    "winston-daily-rotate-file": "^4.7.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.2",
+    "supertest": "^6.3.3"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
   }
 }

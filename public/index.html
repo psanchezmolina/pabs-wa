@@ -1,50 +1,113 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy"
-        content="
-          default-src 'self';
-          script-src 'self';
-          style-src 'self' 'unsafe-inline';
-          img-src 'self' data: blob:;
-          connect-src 'self' https://newbrain.pabs.ai;
-          font-src 'self' https://at.alicdn.com;
-        ">
-  <title>ConexiónWA‑Pabs.ai</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pabs.ai WhatsApp Bridge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
+            font-size: 0.9em;
+        }
+
+        .links {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .links a:hover {
+            color: #764ba2;
+        }
+
+        .version {
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #999;
+        }
+    </style>
 </head>
-
 <body>
-  <div class="evo-panel">
-    <!-- Título principal -->
-    <h1>Bienvenido al asistente para conectar el WhatsApp a Pabs.ai</h1>
+    <div class="container">
+        <div class="logo">💬</div>
+        <h1>Pabs.ai WhatsApp Bridge</h1>
+        <p>
+            Middleware para conectar <strong>GoHighLevel CRM</strong> con <strong>WhatsApp</strong>
+            a través de Evolution API.
+        </p>
+        <p>
+            Procesamiento bidireccional de mensajes con soporte para audio (Whisper) e imágenes (GPT-4o Vision).
+        </p>
+        <div class="status">✓ Sistema Operativo</div>
 
-    <!-- Instrucciones paso a paso -->
-    <ol class="steps">
-      <li>
-        <strong>Paso 1.</strong>
-        El la barra de la izquerda, click en Configuración y copia el <em>"Location ID"</em> (Id. de la ubicación).
-      </li>
-      <li>
-        <strong>Paso 2.</strong>
-        Pega tu <em>"Location ID"</em> en esta caja:
-        <input id="loc-id" placeholder="e.g. jWmSWXQwy7qnsMPdZdn8" />
-      </li>
-      <li>
-        <strong>Paso 3.</strong>
-        Haz clic en <kbd>Revisar conexión</kbd>. Si no estás conectado verás un código QR, escanealo con tu WhatsApp.
-        o se confirmará que ya estás conectado.
-      </li>
-    </ol>
+        <div class="links">
+            <a href="/health" target="_blank">Health Check</a>
+            <a href="/qr" target="_blank">Panel QR</a>
+        </div>
 
-    <!-- Botón único -->
-    <button id="btn-generate">Revisar conexión</button>
-
-    <!-- Área de resultado (QR o mensaje) -->
-    <div id="evo-output"></div>
-  </div>
-
-  <script src="panel.js" defer></script>
+        <div class="version">
+            v1.0.0 | Built with Express + Supabase + Redis + BullMQ
+        </div>
+    </div>
 </body>
 </html>
