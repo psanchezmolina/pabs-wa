@@ -42,16 +42,28 @@ await test('GET /health - should return 200 and health status', async () => {
     throw new Error('Response should have status field');
   }
 
-  if (response.body.status !== 'healthy') {
-    throw new Error(`Expected status 'healthy', got '${response.body.status}'`);
+  if (response.body.status !== 'ok') {
+    throw new Error(`Expected status 'ok', got '${response.body.status}'`);
   }
 
   if (!response.body.timestamp) {
     throw new Error('Response should have timestamp field');
   }
 
+  if (typeof response.body.timestamp !== 'number') {
+    throw new Error('Response timestamp should be a number (Date.now() format)');
+  }
+
   if (typeof response.body.uptime !== 'number') {
     throw new Error('Response should have uptime field as number');
+  }
+
+  if (!response.body.version) {
+    throw new Error('Response should have version field');
+  }
+
+  if (typeof response.body.version !== 'string') {
+    throw new Error('Response version should be a string');
   }
 });
 

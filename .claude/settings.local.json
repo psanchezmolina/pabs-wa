@@ -15,7 +15,11 @@
       "Bash(node test-http-client.js:*)",
       "Bash(node test-phone-formatter.js:*)",
       "Bash(node test-errors.js:*)",
-      "Bash(node test-app.js:*)"
+      "Bash(node test-app.js:*)",
+      "Bash(node test-health.js:*)",
+      "Bash(npm run dev:*)",
+      "Bash(timeout 5 node:*)",
+      "Bash(node test-clients-model.js:*)"
     ],
     "deny": [],
     "ask": []

@@ -1,52 +1,63 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import path from 'path';
-import { fileURLToPath } from 'url';
-const { N8N_BASE_URL, N8N_AUTH_HEADER } = require('./config');
+/**
+ * Server entry point
+ * Initializes and starts the Express application
+ */
 
-const app = express();
+import 'dotenv/config';
+import app from './src/app.js';
+import logger from './src/config/logger.js';
+import { setupUnhandledRejectionHandler } from './src/shared/middleware/error-handler.js';
+
+// Setup unhandled rejection handler
+setupUnhandledRejectionHandler();
+
+// Get port from environment or use default
 const PORT = process.env.PORT || 3000;
-const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
+const HOST = process.env.HOST || '0.0.0.0';
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Start server
+const server = app.listen(PORT, HOST, () => {
+  logger.info('🚀 Server started successfully', {
+    port: PORT,
+    host: HOST,
+    env: process.env.NODE_ENV || 'development',
+    nodeVersion: process.version,
+  });
 
-
-// Proxy genérico
-app.all('/api/:action', async (req, res) => {
-  const { action } = req.params;
-  const locationId = req.method === 'GET'
-    ? req.query.locationId
-    : req.body.locationId;
-  if (!locationId) {
-    return res.status(400).json({ error: 'locationId missing' });
-  }
-
-  let url = `${N8N_BASE_URL}/webhook/${action}`;
-  let opts = { method: req.method, headers: { Authorization: N8N_AUTH_HEADER } };
-
-  // GET: pasamos locationId como query; POST/PUT: en body
-  if (req.method === 'GET') {
-    url += `?locationId=${encodeURIComponent(locationId)}`;
-  } else {
-    opts.headers['Content-Type'] = 'application/json';
-    opts.body = JSON.stringify({ locationId, ...req.body });
-  }
-
-  try {
-    const proxyRes = await fetch(url, opts);
-    const contentType = proxyRes.headers.get('content-type') || '';
-    const data = contentType.includes('application/json')
-      ? await proxyRes.json()
-      : await proxyRes.buffer();
-    res.status(proxyRes.status).type(contentType).send(data);
-  } catch (err) {
-    console.error('Proxy error', err);
-    res.status(500).json({ error: err.message });
-  }
+  logger.info('📡 Server endpoints available:', {
+    health: `http://localhost:${PORT}/health`,
+    root: `http://localhost:${PORT}/`,
+  });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+// Graceful shutdown
+const gracefulShutdown = (signal) => {
+  logger.info(`${signal} received. Starting graceful shutdown...`);
+
+  server.close(() => {
+    logger.info('HTTP server closed');
+
+    // Close other connections (database, redis, etc.)
+    // TODO: Add cleanup for database, redis when needed
+
+    process.exit(0);
+  });
+
+  // Force shutdown after 10 seconds
+  setTimeout(() => {
+    logger.error('Forced shutdown after timeout');
+    process.exit(1);
+  }, 10000);
+};
+
+// Listen for termination signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught Exception:', { error: error.message, stack: error.stack });
+  gracefulShutdown('UNCAUGHT_EXCEPTION');
 });
+
+export default server;

@@ -131,7 +131,7 @@ Resumen de la infraestructura base implementada para Pabs.ai WhatsApp Bridge.
 - Siempre retorna HTTP 400
 
 ### ✅ 10. Express App (src/app.js)
-**Archivo:** `src/app.js` (130 líneas)
+**Archivo:** `src/app.js` (135 líneas)
 
 - **Configuración completa de Express** sin iniciar el servidor
 - **Security:** Helmet con CSP configurado
@@ -139,7 +139,7 @@ Resumen de la infraestructura base implementada para Pabs.ai WhatsApp Bridge.
 - **Body parsing:** JSON y URL-encoded (límite 10MB)
 - **Archivos estáticos:** Servidos desde `/public`
 - **Request logging:** Morgan integrado con Winston
-- **Health check:** Endpoint `/health` con status y uptime
+- **Health check:** Endpoint `/health` con status, uptime, version, timestamp
 - **Placeholder para routes:** Comentado para montar después
 - **Error handlers:** 404 handler + global error handler
 - Factory function `createApp()` exportada
@@ -151,6 +151,42 @@ Resumen de la infraestructura base implementada para Pabs.ai WhatsApp Bridge.
 **Tests:**
 - 22 tests comprehensivos con supertest
 - Valida security headers, CORS, body parsing, static files, error handling
+
+### ✅ 11. Client Model (clients.model.js)
+**Archivo:** `src/modules/clients/clients.model.js` (412 líneas)
+
+**Schemas Joi:**
+- `clientSchema` - Schema completo con todos los campos
+- `clientCreateSchema` - Schema para creación (solo campos requeridos)
+- `clientUpdateSchema` - Schema para actualización (al menos 1 campo + ID)
+
+**Campos validados:**
+- **GHL:** location_id (unique), ghl_access_token, ghl_refresh_token, ghl_token_expiry, conversation_provider_id
+- **Evolution:** instance_name, instance_apikey, instance_sender (WhatsApp JID validado)
+- **Opcionales:** openai_apikey (pattern: sk-*), webhook_secret, is_active, metadata
+- **Auto:** id, created_at, updated_at
+
+**Funciones principales:**
+- `validateClient(data, options)` - Valida datos del cliente contra schema
+- `dbToApp(dbRow)` - Transforma snake_case (DB) → camelCase (App)
+- `appToDb(appData)` - Transforma camelCase (App) → snake_case (DB)
+- `dbToAppArray(dbRows)` - Transforma array de rows DB
+- `sanitizeForLogging(client)` - Redacta campos sensibles para logs
+- `isTokenExpired(client)` - Verifica si token GHL expiró
+- `getTokenExpirySeconds(client)` - Obtiene segundos hasta expiración
+
+**Validaciones especiales:**
+- WhatsApp JID format: `{digits}@s.whatsapp.net` usando `isValidWhatsAppJID()`
+- OpenAI API key: debe empezar con `sk-`
+- Webhook secret: mínimo 8 caracteres
+- Unknown fields: automáticamente stripped
+
+**Tests:**
+- 29 tests comprehensivos
+- Validación de schemas (create, update, full)
+- Transformers bidireccionales
+- Sanitización de datos sensibles
+- Funciones de utilidad (token expiry)
 
 ## Estructura de Archivos Creados
 
@@ -165,6 +201,10 @@ src/
 │   ├── database.README.md             # Documentación database
 │   ├── redis.js                       # ioredis client (241 líneas)
 │   └── redis.README.md                # Documentación redis
+│
+├── modules/
+│   └── clients/
+│       └── clients.model.js           # Client schema y validación (412 líneas)
 │
 └── shared/
     ├── errors/
@@ -198,26 +238,28 @@ public/
 
 docker-compose.example.yml             # Ejemplo con Redis y workers
 test-app.js                            # Tests de configuración de Express (22 tests)
+test-clients-model.js                  # Tests del modelo de clientes (29 tests)
 IMPLEMENTATION_SUMMARY.md              # Este archivo
 ```
 
 ## Estadísticas
 
-- **Total de archivos creados:** 31
-- **Líneas de código:** ~3,200
+- **Total de archivos creados:** 33
+- **Líneas de código:** ~3,600
 - **Líneas de documentación:** ~6,500
-- **Tests ejecutados:** ✅ Todos pasaron (48 tests errors + 22 tests app = 70 tests)
+- **Tests ejecutados:** ✅ Todos pasaron (48 errors + 22 app + 29 model = 99 tests)
 
 ### Archivos por categoría:
 
-- **App:** 1 archivo (app.js)
+- **App:** 1 archivo (app.js) + 1 server (server.js)
 - **Config modules:** 3 archivos JS + 3 READMEs
+- **Business modules:** 1 archivo (clients.model.js)
 - **Error classes:** 6 archivos JS + 1 README
 - **Middlewares:** 4 archivos + 1 README
 - **Utils:** 3 archivos JS + 2 READMEs + 1 index
 - **Public:** 1 archivo (index.html)
 - **Docker:** 1 archivo
-- **Otros:** 4 archivos (summaries/tests)
+- **Otros:** 5 archivos (summaries/tests)
 
 ## Tests Realizados
 
@@ -303,7 +345,7 @@ IMPLEMENTATION_SUMMARY.md              # Este archivo
 - ✅ 48 tests passed → comprehensive coverage of all error classes
 
 ### ✅ Express App (src/app.js)
-- ✅ Health check → returns 200 with status, timestamp, uptime
+- ✅ Health check → returns 200 with status, timestamp, uptime, version
 - ✅ Security headers → Helmet (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection)
 - ✅ CORS → Access-Control-Allow-Origin header, OPTIONS preflight
 - ✅ Body parsing → JSON and URL-encoded (10MB limit)
@@ -313,6 +355,22 @@ IMPLEMENTATION_SUMMARY.md              # Este archivo
 - ✅ Content-Type → application/json for API responses
 - ✅ Large payloads → accepts up to 10MB
 - ✅ 22 tests passed → comprehensive coverage of app configuration
+
+### ✅ Client Model (clients.model.js)
+- ✅ Schema validation → valid client passes, missing required fails
+- ✅ WhatsApp JID validation → valid format passes, invalid fails
+- ✅ OpenAI key validation → sk- prefix required
+- ✅ Unknown fields → automatically stripped
+- ✅ Null values → allowed for optional fields
+- ✅ Create schema → validates required fields only
+- ✅ Update schema → requires ID + at least one field
+- ✅ DB to App transform → snake_case to camelCase conversion
+- ✅ App to DB transform → camelCase to snake_case conversion
+- ✅ Array transformation → handles multiple rows
+- ✅ Sanitization → redacts sensitive fields for logging
+- ✅ Token expiry → correctly identifies expired tokens
+- ✅ Token expiry time → calculates seconds until expiration
+- ✅ 29 tests passed → comprehensive model validation and transformation
 
 ## Formato de Respuesta Estandarizado
 

@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { readFileSync } from 'fs';
 import logger from './config/logger.js';
 import requestLogger from './shared/middleware/request-logger.js';
 import errorHandler, { notFoundHandler } from './shared/middleware/error-handler.js';
@@ -16,6 +17,11 @@ import errorHandler, { notFoundHandler } from './shared/middleware/error-handler
 // ES modules: Get __dirname equivalent
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Load package.json for version info
+const packageJsonPath = path.join(__dirname, '..', 'package.json');
+const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
+const VERSION = packageJson.version;
 
 /**
  * Create and configure Express application
@@ -83,9 +89,10 @@ export function createApp() {
 
   app.get('/health', (req, res) => {
     res.status(200).json({
-      status: 'healthy',
-      timestamp: new Date().toISOString(),
+      status: 'ok',
       uptime: process.uptime(),
+      timestamp: Date.now(),
+      version: VERSION,
       environment: process.env.NODE_ENV || 'development',
     });
   });
